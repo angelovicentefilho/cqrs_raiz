@@ -1,0 +1,15 @@
+server:
+  port: 9001
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: db_products
+
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers: localhost:29092
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
