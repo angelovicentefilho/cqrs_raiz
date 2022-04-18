@@ -33,7 +33,7 @@ public class CreateProductResource {
         command.setId(id);
         try {
             dispatcher.send(command);
-            return new ResponseEntity<>(new BaseResponse("Produto criado com sucesso!"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new BaseResponse("Produto criado com sucesso! ID: "+id), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(new BaseResponse("Erro enquanto cadastrava o produto '"+id+"'"), HttpStatus.INTERNAL_SERVER_ERROR);
