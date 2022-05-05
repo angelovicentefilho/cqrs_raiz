@@ -1,8 +1,11 @@
 package br.com.avf.cqrs.product.command.api.resources;
 
+import br.com.avf.cqrs.core.commands.BaseCommand;
 import br.com.avf.cqrs.core.infraestructures.CommandDispatcher;
+import br.com.avf.cqrs.product.command.api.commands.CreateProductCommand;
 import br.com.avf.cqrs.product.command.api.protocols.ProductRequest;
 import br.com.avf.cqrs.product.command.codec.Codec;
+import br.com.avf.cqrs.product.commons.helper.ApiCommandDispatcher;
 import br.com.avf.cqrs.product.commons.helper.IdGenerator;
 import br.com.avf.cqrs.product.commons.protocols.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class CreateProductResource {
 
-    private final CommandDispatcher dispatcher;
+    private final ApiCommandDispatcher dispatcher;
 
     @PostMapping
     public ResponseEntity<BaseResponse> create(@RequestBody ProductRequest request) {
         String id = IdGenerator.getId();
         var command = Codec.toCommand(request);
         command.setId(id);
-        try {
-            dispatcher.send(command);
-            return new ResponseEntity<>(new BaseResponse("Produto criado com sucesso! ID: "+id), HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(new BaseResponse("Erro enquanto cadastrava o produto '"+id+"'"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return dispatcher.dispatch(id, command, HttpStatus.CREATED, "Produto criado com sucesso! ID: ","Erro enquanto cadastrava o produto '"+id+"'" );
     }
+
 
 }

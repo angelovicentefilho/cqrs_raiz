@@ -9,4 +9,5 @@ import br.com.avf.cqrs.core.domains.AggregateRoot;
 public interface EventSourcingHandler<T> {
     void save(AggregateRoot aggregate);
     T getById(String id);
+    void republishEvents();
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * @author angelo.vicente - angelovicentefilho@gmail.com
  * @since 2022-04-05, Tuesday
  */
-public class AggregateRoot {
+public abstract class AggregateRoot {
     protected String id;
     private int version = -1;
 
@@ -59,4 +59,5 @@ public class AggregateRoot {
     public void replayEvents(Iterable<BaseEvent> events) {
         events.forEach(event -> applyChange(event, false));
     }
+
 }

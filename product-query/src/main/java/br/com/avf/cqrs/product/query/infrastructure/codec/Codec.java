@@ -1,6 +1,8 @@
 package br.com.avf.cqrs.product.query.infrastructure.codec;
 
 import br.com.avf.cqrs.product.commons.events.ProductCreatedEvent;
+import br.com.avf.cqrs.product.commons.events.ProductDeletedEvent;
+import br.com.avf.cqrs.product.commons.events.ProductUpdatedEvent;
 import br.com.avf.cqrs.product.query.api.protocols.ProductResponse;
 import br.com.avf.cqrs.product.query.domains.ProductEntity;
 import lombok.experimental.UtilityClass;
@@ -19,6 +21,21 @@ public class Codec {
         BeanUtils.copyProperties(event, entity);
         return entity;
     }
+
+    public static ProductEntity toEntity(ProductUpdatedEvent event) {
+        var entity = new ProductEntity();
+        BeanUtils.copyProperties(event, entity);
+        return entity;
+    }
+
+    public static ProductEntity toEntity(ProductDeletedEvent event) {
+        var entity = new ProductEntity();
+        BeanUtils.copyProperties(event, entity);
+        return entity;
+    }
+
+
+
 
     public static ProductResponse toResponse(List<ProductEntity> products) {
         return ProductResponse.builder()

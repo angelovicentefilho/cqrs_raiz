@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,18 @@ public class ProductEventSourcingHandler implements EventSourcingHandler<Product
         }
         return productAggregate;
     }
+
+    @Override
+    public void republishEvents() {
+        List<String> aggregatesIds = eventStore.getAggregateIds();
+        for (String aggregateId: aggregatesIds) {
+            ProductAggregate aggregate = getById(aggregateId);
+            if (aggregate == null || !aggregate.isActive()) continue;
+            List<BaseEvent> events = eventStore.getEvents(aggregateId);
+            for (BaseEvent evt: events) {
+                eventProducer.producer(evt.getClass().getSimpleName(), evt);
+            }
+        }
+    }
+
 }
