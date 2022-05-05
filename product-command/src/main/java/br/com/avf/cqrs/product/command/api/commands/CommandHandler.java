@@ -7,4 +7,6 @@ package br.com.avf.cqrs.product.command.api.commands;
 public interface CommandHandler {
 
     void handle(CreateProductCommand command);
+    void handle(UpdateProductCommand command);
+    void handle(DeleteProductCommand command);
 }

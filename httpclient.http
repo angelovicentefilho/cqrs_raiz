@@ -1,0 +1,27 @@
+POST http://localhost:9001/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "DarkSouls III",
+  "quantity": 2,
+  "price": 257.21
+}
+###
+
+PUT http://localhost:9001/api/v1/products/A6DA306F1D8548858467B886AB555A65
+Content-Type: application/json
+
+{
+"name": "DarkSouls III",
+"quantity": 50,
+"price": 200.00
+}
+
+###
+
+DELETE http://localhost:9001/api/v1/products/DF41818FD6514B34BA63345F601F30C1
+
+
+###
+GET http://localhost:9002/api/v1/products
+###

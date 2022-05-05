@@ -1,6 +1,7 @@
 package br.com.avf.cqrs.product.command.api.resources;
 
 import br.com.avf.cqrs.core.infraestructures.CommandDispatcher;
+import br.com.avf.cqrs.product.command.api.commands.UpdateProductCommand;
 import br.com.avf.cqrs.product.command.api.protocols.ProductRequest;
 import br.com.avf.cqrs.product.command.codec.Codec;
 import br.com.avf.cqrs.product.commons.helper.ApiCommandDispatcher;
@@ -10,29 +11,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author angelo.vicente - angelovicentefilho@gmail.com
- * @since 2022-04-11, Monday
+ * @since 2022-05-04, Wednesday
  */
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 @Slf4j
-public class CreateProductResource {
-
+public class UpdateProductResource {
     private final ApiCommandDispatcher dispatcher;
 
-    @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody ProductRequest request) {
-        String id = IdGenerator.getId();
-        var command = Codec.toCommand(request);
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse> update(@PathVariable String id, @RequestBody ProductRequest request) {
+        var command = Codec.toUpdateCommand(request);
         command.setId(id);
-        return dispatcher.dispatch(id, command, "Produto criado com sucesso! ID: ", "Erro enquanto criava o produto '"+id+"'");
+        return dispatcher.dispatch(id, command, "Produto atualizado com sucesso! ID: ", "Erro enquanto atualizava o produto '"+id+"'");
     }
 
 }

@@ -2,8 +2,11 @@ package br.com.avf.cqrs.product.command.domain;
 
 import br.com.avf.cqrs.core.domains.AggregateRoot;
 import br.com.avf.cqrs.product.command.api.commands.CreateProductCommand;
+import br.com.avf.cqrs.product.command.api.commands.UpdateProductCommand;
 import br.com.avf.cqrs.product.command.codec.Codec;
 import br.com.avf.cqrs.product.commons.events.ProductCreatedEvent;
+import br.com.avf.cqrs.product.commons.events.ProductDeletedEvent;
+import br.com.avf.cqrs.product.commons.events.ProductUpdatedEvent;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -15,10 +18,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ProductAggregate extends AggregateRoot {
 
-    private String id;
     private String name;
     private Integer quantity;
     private BigDecimal price;
+    private boolean active;
+
+    public boolean isActive() {
+        return this.active;
+    }
 
     public ProductAggregate(CreateProductCommand command) {
         raiseEvent(Codec.toEvent(command));
@@ -29,6 +36,38 @@ public class ProductAggregate extends AggregateRoot {
         this.name = event.getName();
         this.quantity = event.getQuantity();
         this.price = event.getPrice();
+        this.active = true;
     }
 
+    public void update(UpdateProductCommand command) {
+        if (!this.active) {
+            throw new IllegalStateException("Não posso atualizar um produto removido!");
+        }
+        if (command.getQuantity() < 0) {
+            throw new IllegalArgumentException("Não posso reduzir a quantidade para valor abaixo de zero!");
+        }
+        if (command.getPrice().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Não posso cadastrar um preço negativo!");
+        }
+        raiseEvent(Codec.toEvent(command));
+    }
+
+    public void apply(ProductUpdatedEvent event) {
+        this.id = event.getId();
+        this.name = event.getName();
+        this.quantity = event.getQuantity();
+        this.price = event.getPrice();
+    }
+
+    public void delete(String id) {
+        if (!this.active) {
+            throw new IllegalStateException("O Produto já foi removido");
+        }
+        raiseEvent(Codec.toEvent(id));
+    }
+
+    public void apply(ProductDeletedEvent event) {
+        this.id = event.getId();
+        this.active = false;
+    }
 }

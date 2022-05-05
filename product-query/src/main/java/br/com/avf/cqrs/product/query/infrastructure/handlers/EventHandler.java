@@ -1,6 +1,8 @@
 package br.com.avf.cqrs.product.query.infrastructure.handlers;
 
 import br.com.avf.cqrs.product.commons.events.ProductCreatedEvent;
+import br.com.avf.cqrs.product.commons.events.ProductDeletedEvent;
+import br.com.avf.cqrs.product.commons.events.ProductUpdatedEvent;
 
 /**
  * @author angelo.vicente - angelovicentefilho@gmail.com
@@ -9,4 +11,6 @@ import br.com.avf.cqrs.product.commons.events.ProductCreatedEvent;
 public interface EventHandler {
 
     void on(ProductCreatedEvent event);
+    void on(ProductUpdatedEvent event);
+    void on(ProductDeletedEvent event);
 }
